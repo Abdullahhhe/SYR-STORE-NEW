@@ -1,0 +1,51 @@
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const dashboardRoutes = require("./routes/dashboardRoutes");
+const authRoutes = require("./routes/auth");
+const cors = require("cors");
+const app = express();
+// الاتصال بقاعدة البيانات
+mongoose
+  .connect("mongodb://localhost:27017/SYRStore", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.error("❌ Connection error:", err));
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/dashboard", dashboardRoutes);
+app.use("/", authRoutes);
+const cleanupCart = require("./utils/cleanupCart");
+setInterval(() => {
+  cleanupCart();
+}, 1000 * 60 * 60);
+
+// هذا للسماح بقراءة x-www-form-urlencoded
+
+
+// استدعاء الراوتر
+const productRoute = require("./routes/product");
+app.use("/api/product", productRoute);
+const UserRoutes = require("./routes/users");
+app.use("/api/users", UserRoutes);
+const CartRoutes = require("./routes/cart");
+app.use("/api/Cart", CartRoutes);
+const merchantOrderRoutes = require("./routes/merchantOrder");
+const adminLogRoutes = require("./routes/adminLog");
+app.use("/api/merchant-orders", merchantOrderRoutes);
+app.use("/api/admin-logs", adminLogRoutes);
+const purchaseRoutes = require("./routes/purchase");
+app.use("/api/purchase", purchaseRoutes);
+const uploadRoutes = require("./routes/upload");
+app.use("/api", uploadRoutes);
+app.use("/uploads", express.static("uploads"));
+
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
