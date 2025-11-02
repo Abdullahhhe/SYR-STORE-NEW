@@ -23,6 +23,17 @@ export async function getOrdersByMerchant(merchantId) {
   return await MerchantOrder.find({ merchantId }).populate("productId buyerId");
 }
 
+export const getAllMerchantOrders = async () => {
+  try {
+    const res = await fetch("http://localhost:5000/api/merchant-orders");
+    if (!res.ok) throw new Error("فشل في جلب الطلبات");
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.error("❌ خطأ في getAllMerchantOrders:", err);
+    return [];
+  }
+};
 export async function updateOrderStatus(orderId, status) {
   return await MerchantOrder.findByIdAndUpdate(
     orderId,

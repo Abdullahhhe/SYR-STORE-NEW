@@ -11,6 +11,9 @@ const userSchema = new mongoose.Schema(
       lowercase:true,
       trim:true
     },
+    verificationCode: String,
+    isVerified: Boolean,
+    number:Number,
     password: {type:String , required:true},
     role: {
       type: String,

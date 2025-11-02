@@ -10,7 +10,9 @@ router.post("/", async (req, res) => {
     const user = new User({
       name: req.body.name,
       email: req.body.email,
+      number:req.body.number,
       password: hashedPassword,
+      role:req.body.role,
     });
     const saveUser = await user.save();
     res.status(201).json(saveUser);
@@ -39,14 +41,23 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) return res.status(401).json({ message: "البريد غير مسجل" });
-
+    console.log("🎯 الدور المستخرج:", user.role);
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(401).json({ message: "كلمة المرور غير صحيحة" });
+    console.log("🧠 بيانات المستخدم قبل إنشاء التوكن:", user);
+    const payload = {
+      _id: user._id.toString(),
+      role: user.role,
+    };
+    console.log("📦 محتوى التوكن قبل التشفير:", payload);
 
-    const token = jwt.sign({ id: user._id }, "secret_key", { expiresIn: "1d" });
-    res.status(200).json({ status: 1, data: { token } });
+    const token = jwt.sign(payload, process.env.JWT_SECRET);
+
+    console.log("🔐 تم إنشاء التوكن:", token);
+    res.status(200).json({ user, token });
   } catch (err) {
+    console.error("❌ خطأ أثناء تسجيل الدخول:", err);
     res.status(500).json({ message: "خطأ في السيرفر" });
   }
 });
@@ -79,6 +90,15 @@ router.delete("/:id", async (req, res) => {
   } catch (err) {
     res.status(500).json({ massege: err.massege });
   }
+});
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+  if (!user) return res.status(404).json({ error: "المستخدم غير موجود" });
+  res.status(200).json(user);
+}catch(err){
+  res.status(500).json({ message: err.message });
+}
 });
 
 module.exports = router;

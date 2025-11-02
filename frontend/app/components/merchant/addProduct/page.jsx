@@ -1,6 +1,8 @@
 'use client';
 import { useState } from "react";
 import Header from "../HeaderMerchant";
+import {toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function AddProductForm() {
   const [name, setName] = useState("");
@@ -11,6 +13,7 @@ export default function AddProductForm() {
   const [imageFile, setImageFile] = useState(null);
   const [color, setColor] = useState([]);
   const [newColor, setNewColor] = useState("");
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const addColor = () => {
     if (newColor.trim() && !color.includes(newColor.trim())) {
       setColor([...color, newColor.trim()]);
@@ -47,7 +50,7 @@ export default function AddProductForm() {
     formData.append("image", imageFile); // الصورة تُرسل هنا مباشرة
 
     try {
-      const res = await fetch("http://localhost:3000/api/product", {
+      const res = await fetch(`${apiUrl}/product`, {
         method: "POST",
         body: formData,
       });
@@ -63,51 +66,51 @@ export default function AddProductForm() {
   return (
     <div dir="rtl" className="p-4 text-right">
       <Header />
-      <h2 className="text-xl font-bold mb-4">إضافة منتج جديد</h2>
-
+      <h2 className="text-xl font-bold mb-4 mt-[30px]">إضافة منتج جديد</h2>
+      <div className="w-[74%] ml-[13%] mr-[13%] rounded-2xl shadow-2xl shadow-gray-100 mt-[50px]">
       <input
-        className="border rounded-xl mt-[3px] pr-[5px]"
+        className="border rounded-md mt-[5px] pr-[5px] block mr-[10%] w-[80%] h-[35px]"
         placeholder="اسم المنتج"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
       <input
-        className="border rounded-xl mt-[3px] pr-[5px]"
+        className="border rounded-md mt-[5px] pr-[5px] block mr-[10%] w-[80%] h-[35px]"
         placeholder="السعر"
         value={price}
         onChange={(e) => setPrice(e.target.value)}
       />
       <input
-        className="border rounded-xl mt-[3px] pr-[5px]"
+        className="border rounded-md mt-[5px] pr-[5px] block mr-[10%] w-[80%] h-[35px]"
         placeholder="الكمية المتاحة"
         value={quantity}
         onChange={(e) => setQuantity(e.target.value)}
       />
       <input
-        className="border rounded-xl mt-[3px] pr-[5px]"
+        className="border rounded-md mt-[5px] pr-[5px] block mr-[10%] w-[80%] h-[35px]"
         placeholder="الوصف"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
       <input
-        className="border rounded-xl mt-[3px] pr-[5px]"
-        placeholder="الوصف"
+        className="border rounded-md mt-[5px] pr-[5px] block mr-[10%] w-[80%] h-[35px]"
+        placeholder="الالوان المتاحة"
         value={newColor}
         onChange={(e) => setNewColor(e.target.value)}
       />
-      <butto className="bg-blue-400" onClick={addColor}>Color</butto>
+      <button className="bg-blue-400 mr-[71%] rounded-sm text-white transition-all duration-200 hover:bg-blue-500" onClick={addColor}>Color</button>
       <input
-        className="border rounded-xl mt-[3px] pr-[5px]"
+        className="border rounded-md mt-[5px] pr-[5px] block mr-[10%] w-[80%] h-[35px]"
         placeholder="التصنيف"
         value={category}
         onChange={(e) => setCategory(e.target.value)}
       />
 
       <input
+          className="border rounded-md mt-[5px] pr-[5px] block mr-[10%] w-[80%] h-[35px]"
         type="file"
         accept="image/*"
         onChange={handleImageChange}
-        className="mt-2"
       />
 
       {imageFile && (
@@ -119,10 +122,11 @@ export default function AddProductForm() {
           addColor();
           handleSubmit();
         }}
-        className="bg-blue-600 text-white px-4 py-2 mt-2 rounded transition-all duration-200 hover:bg-blue-700"
+        className="bg-blue-600 mr-[45%] text-white px-4 py-2 mt-2 rounded transition-all duration-200 hover:bg-blue-700"
       >
         إرسال المنتج
       </button>
+      </div>
     </div>
   );
 }

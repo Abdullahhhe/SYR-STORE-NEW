@@ -12,7 +12,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
-
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -22,10 +22,10 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
     try {
-      const res = await fetch("http://localhost:3000/login", {
+      const res = await fetch("http://localhost:5000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password}),
       });
 
       const contentType = res.headers.get("content-type");
@@ -42,10 +42,9 @@ export default function LoginPage() {
         console.error("الاستجابة ناقصة:", data);
         return;
       }
-
+      const fullUser = { ...data.user, token: data.token };
+      localStorage.setItem("user", JSON.stringify(fullUser));
       const role = data.user.role;
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
       setIsLoggedIn(true);
 
       if (role === "user") router.push("/components/HomePage");
@@ -57,7 +56,7 @@ export default function LoginPage() {
   };
 
   const handelAdd = async () => {
-    try {
+    /*try {
       const newUsers = await addUsers({ name, email, password });
       setUsers((prev) => [...prev, newUsers]);
       setName("");
@@ -66,8 +65,10 @@ export default function LoginPage() {
       router.push("/");
     } catch (err) {
       console.error("خطأ أثناء إنشاء المستخدم:", err);
-    }
-  };
+    }*/
+    router.push("/components/register");
+    };
+    const [showPassword , setShowPassword]=useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -89,12 +90,16 @@ export default function LoginPage() {
                 className="border-b-2 block mt-[38px] focus:border-0 w-[280px] ml-[-50px]"
                 placeholder="Email"
               />
+              <div className="w-[280px] border-b-2 focus:border-0 flex justify-between mt-[38px] ml-[-50px]">
               <input
                 value={password}
+                type={showPassword ? 'text' :'password'}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border-b-2 block mt-[38px] focus:border-0 w-[280px] ml-[-50px]"
+                className=" focus:border-0 w-[100%]"
                 placeholder="Password"
               />
+              <button type="button" onClick={()=>{setShowPassword(!showPassword)}}>👀</button>
+              </div>
               <button
                 className="bg-blue-500 text-center text-white transition-all duration-200 hover:bg-blue-600 rounded-md 
                 block w-[200px] cursor-pointer mt-[40px]"

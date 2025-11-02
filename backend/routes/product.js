@@ -65,7 +65,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 }
 
 const imageUrl = req.file
-  ? `http://localhost:3000/uploads/${req.file.filename}`
+  ? `http://localhost:5000/uploads/${req.file.filename}`
       : null;
 
 const product = await Product.create({
@@ -109,25 +109,54 @@ router.put("/:id", async (req, res) => {
 });
 
 // ✅ Delete product
-router.delete("/:id", async (req, res) => {
-  try {
-    const { merchantId } = req.body;
-    const product = await Product.findById(req.params.id);
+const { authenticate } = require("../middleware/authMiddleware"); // تأكد من وجود هذا الميدلوير
 
+router.delete("/:id", authenticate, async (req, res) => {
+  console.log("📥 تم الوصول إلى مسار الحذف");
+  try {
+    const productId = req.params.id;
+
+    // تحقق من صلاحية معرف المنتج
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(400).json({ error: "معرف المنتج غير صالح" });
+    }
+
+    const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ error: "المنتج غير موجود" });
     }
 
-    if (product.merchantId.toString() !== merchantId) {
-      return res.status(403).json({ error: "ليس لديك صلاحية لحذف هذا المنتج" });
+    // تحقق من وجود معرف التاجر داخل المنتج
+    if (!product.merchantId) {
+      return res.status(400).json({ error: "المنتج لا يحتوي على معرف التاجر" });
     }
 
-    await Product.deleteOne({ _id: req.params.id });
-    res.status(200).json({ success: true, message: "✅ تم حذف المنتج" });
-  } catch (error) {
-    console.error("❌ خطأ في الحذف:", error.message);
-    res.status(500).json({ error: "فشل في حذف المنتج" });
-  }
+    // تحقق من وجود المستخدم داخل التوكن
+    if (!req.user || !req.user._id || !req.user.role) {
+  return res.status(401).json({ error: "المستخدم غير مصرح له" });
+}
+
+const userId = req.user._id.toString();
+const userRole = req.user.role;
+const isOwner = product.merchantId.toString() === userId;
+const isAdmin = userRole === "admin";
+    console.log("📦 المنتج:", product);
+    console.log("👤 المستخدم:", req.user);
+    console.log("🔍 المنتج.merchantId:", product.merchantId?.toString());
+    console.log("🔍 المستخدم._id:", req.user._id?.toString());
+    console.log("🔍 الدور:", req.user.role);
+// تحقق من صلاحية الحذف
+if (!isOwner && !isAdmin) {
+  return res.status(403).json({ error: "ليس لديك صلاحية لحذف هذا المنتج" });
+}
+
+await Product.deleteOne({ _id: productId });
+res.status(200).json({ success: true, message: "✅ تم حذف المنتج بنجاح" });
+  } catch (err) {
+  console.error("❌ خطأ أثناء الحذف:", err);
+  res.status(500).json({ error: "فشل في حذف المنتج" });
+}
 });
+
 
 module.exports = router;

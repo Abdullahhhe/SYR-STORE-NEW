@@ -1,7 +1,6 @@
 'use client';
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Header from "./components/Header";
 export default function Home(){
     const router=useRouter();
     useEffect(()=>{
@@ -10,7 +9,8 @@ export default function Home(){
             const user=JSON.parse(storeUser);
             if(user.role==="merchant"){
                 router.push("/components/merchant/addProduct");
-            }else router.push("/components/HomePage")
+            }
+            else router.push("/components/HomePage")
         }
     })
     return(

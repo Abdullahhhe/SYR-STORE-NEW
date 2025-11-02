@@ -10,7 +10,9 @@ export default function CartPage() {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [description, setDescription] = useState("");
   const router = useRouter();
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -28,7 +30,7 @@ export default function CartPage() {
       return;
     }
 
-    fetch(`http://localhost:3000/api/cart?userId=${user.id}`)
+    fetch(`${apiUrl}/cart?userId=${user.id}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.cart && data.cart.items) {
@@ -54,12 +56,13 @@ export default function CartPage() {
   const handleConfirmPurchase = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     try {
-      const res = await fetch("http://localhost:3000/api/purchase", {
+      const res = await fetch("${apiUrl}/purchase", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           productId: selectedProduct._id,
           quantity,
+          description,
           buyerId: user.id,
         }),
       });
@@ -67,6 +70,7 @@ export default function CartPage() {
       const result = await res.json();
       if (res.ok) {
         alert("✅ تم تثبيت الشراء");
+        selectedProduct.quantity=-quantity;
         setShowModal(false);
         setCartItems((prev) =>
           prev.filter((item) => item.productId._id !== selectedProduct._id)
@@ -84,7 +88,7 @@ export default function CartPage() {
     const user = JSON.parse(localStorage.getItem("user"));
     console.log(user);
     try {
-      const res = await fetch("http://localhost:3000/api/cart", {
+      const res = await fetch("${apiUrl}/cart", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -183,9 +187,18 @@ export default function CartPage() {
                 onChange={(e) => setQuantity(Number(e.target.value))}
                 className="w-full border p-2 mb-4"
               />
+              <h3 className="text-lg font-bold mb-2">
+                اللون المطلوب و المقاس ان وجد
+              </h3>
+              <input
+                type="text"
+                value={description}
+                onChange={(e)=>setDescription(e.target.value)}
+                className="w-full border p-2 mb-4"
+              />
               <button
                 onClick={handleConfirmPurchase}
-                className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+                className="bg-blue-600 text-white px-4 py-2 rounded w-full mt-[5px]"
               >
                 تأكيد الشراء
               </button>

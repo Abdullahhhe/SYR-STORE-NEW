@@ -17,7 +17,7 @@ router.post("/upload", upload.single("image"), (req, res) => {
         return res.status(400).json({ error: "لم يتم رفع أي صورة" });
     }
 
-    const imageUrl = `http://localhost:3000/uploads/${req.file.filename}`;
+    const imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
         res.status(200).json({ imageUrl });
 });
 

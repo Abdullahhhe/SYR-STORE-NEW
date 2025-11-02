@@ -7,6 +7,7 @@ const purchaseSchema = new mongoose.Schema({
   total: { type: Number },
   status: { type: String, default: "تم التثبيت" },
   timestamp: { type: Date, default: Date.now },
+  description: String
 });
 
 module.exports =

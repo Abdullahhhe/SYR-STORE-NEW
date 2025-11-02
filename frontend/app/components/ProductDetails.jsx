@@ -5,7 +5,7 @@ import Header from "./Header";
 
 export default function ProductDetails({ product }) {
   const [isOpen, setIsOpen] = useState(false);
-
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const confirmAction = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
@@ -23,7 +23,7 @@ export default function ProductDetails({ product }) {
       productId: product?._id,
     });
     try {
-      const res = await fetch("http://localhost:3000/api/cart", {
+      const res = await fetch(`${apiUrl}/cart`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -78,18 +78,19 @@ export default function ProductDetails({ product }) {
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-xl font-bold text-gray-900">
+              <span className="text-xl font-bold text-gray-900 ">
                 {product.new_price}$
               </span>
+              <p dir="rtl" className="text-right">الالوان المتاحة: <span className="font-black">{product.color}</span></p>
+            </div>
               <button
-                className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition hover:cursor-pointer"
+                className="bg-black text-white px-6 py-2 rounded-full hover:bg-gray-800 transition hover:cursor-pointer mt-[8px]"
                 onClick={() => {
                   setIsOpen(true);
                 }}
               >
                 ارسال الى السلة
               </button>
-            </div>
 
             <p className="text-xs text-gray-400 mt-2">Fught: Fiy, Wellilows</p>
 

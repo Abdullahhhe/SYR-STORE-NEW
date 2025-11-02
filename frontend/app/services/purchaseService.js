@@ -27,3 +27,10 @@ export async function getUserPurchases(userId) {
   await connectDB();
   return await Purchase.find({ buyerId: userId }).populate("productId");
 }
+export async function updateOrderStatus(orderId, status) {
+  return await MerchantOrder.findByIdAndUpdate(
+    orderId,
+    { status },
+    { new: true }
+  );
+}

@@ -1,5 +1,5 @@
 import { api } from "./apiConfig";
-
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 export const getUsers = async () => {
   const res = await api.get("./users");
   return res.data;
@@ -22,7 +22,7 @@ export const loginUser = async (credentials) => {
 
   try {
     const res = await axios.post(
-      "http://localhost:3000/api/users/login",
+      `${apiUrl}/users/login`,
       formData,
       {
         headers: {
@@ -41,7 +41,7 @@ export const loginUser = async (credentials) => {
 export const getUserProfile = async () => {
   const token = localStorage.getItem("token");
 
-  const res = await axios.get("http://localhost:3000/api/users/profile", {
+  const res = await axios.get(`${apiUrl}/users/profile`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

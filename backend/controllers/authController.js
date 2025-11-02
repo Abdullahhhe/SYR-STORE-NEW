@@ -32,7 +32,7 @@ exports.login = async (req, res) => {
     if (!isMatch)
       return res.status(401).json({ message: "كلمة المرور غير صحيحة" });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id , role:user.role }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
     res.json({

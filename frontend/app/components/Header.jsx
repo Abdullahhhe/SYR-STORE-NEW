@@ -2,7 +2,9 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useFilter } from '../../context/FilterContext';
 export default function Navbar() {
+  const { category , setCategory } = useFilter();
   const [isSticky, setIsSticky] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
@@ -37,9 +39,22 @@ export default function Navbar() {
             <input
               type="text"
               placeholder="ابحث عن منتج.."
-              className="md:w-[400px] w-[80%] px-3 py-2 rounded-l-lg bg-gray-100 focus:outline-none focus:ring focus:border-blue-50 text-sm "
+              className="md:w-[400px] w-[80%] px-3 py-2 rounded-l-lg bg-gray-100 focus:outline-none focus:ring focus:border-blue-50 text-sm"
             />
-            <button className="bg-green-500 text-white  rounded-r-lg transition-all duration-300 pl-3 pr-3 cursor-pointer hover:bg-green-600">Filtter</button>
+            <select
+              className="bg-green-500 text-white text-center  rounded-r-lg transition-all duration-300 pl-3 pr-3 cursor-pointer hover:bg-green-600"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+            <option value="all">الكل</option>
+              <option value="احذية">احذية</option>
+              <option value="ملابس">ملابس</option>
+              <option value="اجهزة الألكترونية">اجهزة ألكترونية</option>
+              <option value="مكياجات">مكياجات</option>
+              <option value="قرطاسية">قرطاسية</option>
+              <option value="اكسسوارات">اكسسوارات</option>
+              <option value="ادوات منزلية">ادوات منزلية</option>
+            </select>
           </div>
 
           {/* Hamburger Button */}

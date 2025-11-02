@@ -44,8 +44,7 @@ app.use("/api/purchase", purchaseRoutes);
 const uploadRoutes = require("./routes/upload");
 app.use("/api", uploadRoutes);
 app.use("/uploads", express.static("uploads"));
-
-const PORT = 3000;
-app.listen(PORT, () => {
+const PORT = 5000;
+app.listen(PORT,'0.0.0.0', () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

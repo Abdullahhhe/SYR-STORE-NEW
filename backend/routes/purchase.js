@@ -8,7 +8,7 @@ const AdminLog = require("../models/AdminLog");
 
 // إنشاء عملية شراء
 router.post("/", async (req, res) => {
-  const { productId, quantity, buyerId } = req.body;
+  const { productId, quantity,description, buyerId } = req.body;
 
   try {
     const product = await Product.findById(productId);
@@ -16,12 +16,12 @@ router.post("/", async (req, res) => {
       return res.status(404).json({ error: "المنتج غير موجود" });
     }
 
-    if (product.stock < quantity) {
+    if (product.quantity < quantity) {
       return res.status(400).json({ error: "الكمية غير متوفرة" });
     }
 
     // تحديث المخزون
-    product.stock -= quantity;
+    product.quantity -= quantity;
     await product.save();
 
     // إنشاء سجل للمشتري
@@ -29,6 +29,7 @@ router.post("/", async (req, res) => {
       buyerId: new mongoose.Types.ObjectId(buyerId),
       productId: product._id,
       quantity,
+      description,
       total: quantity * product.new_price,
       status: "قيد التحضير",
       timestamp: new Date(),
@@ -41,6 +42,7 @@ router.post("/", async (req, res) => {
       quantity,
       buyerId: new mongoose.Types.ObjectId(buyerId),
       purchaseId: purchase._id,
+      description,
       status: "جاهز للتغليف",
       timestamp: new Date(),
     });
@@ -52,6 +54,7 @@ router.post("/", async (req, res) => {
       quantity,
       buyerId: new mongoose.Types.ObjectId(buyerId),
       merchantId: product.merchantId,
+      description,
       purchaseId: purchase._id,
       merchantOrderId: merchantOrder._id,
       timestamp: new Date(),
@@ -76,5 +79,47 @@ router.get("/user/:id", async (req, res) => {
     res.status(500).json({ error: "فشل في جلب المشتريات" });
   }
 });
+const { authenticate } = require("../middleware/authMiddleware");
 
+// ✅ تعديل حالة الطلب بواسطة الأدمن فقط
+router.put("/:id", authenticate, async (req, res) => {
+  try {
+    // تحقق من أن المستخدم أدمن
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ error: "❌ ليس لديك صلاحية لتعديل حالة الطلب" });
+    }
+
+    const { status } = req.body;
+
+    const updated = await Purchase.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: "❌ الطلب غير موجود" });
+    }
+
+    res.status(200).json({ message: "✅ تم تعديل حالة الطلب", updated });
+  } catch (error) {
+    console.error("❌ خطأ في تعديل الطلب:", error.message);
+    res.status(500).json({ error: "فشل في تعديل الطلب" });
+  }
+});
+
+// ✅ حذف سجل شراء بواسطة الأدمن فقط
+router.delete("/:id",authenticate,  async (req, res) => {
+  try {
+    const deleted = await Purchase.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: "❌ الطلب غير موجود أو تم حذفه مسبقًا" });
+    }
+
+    res.status(200).json({ message: "✅ تم حذف الطلب بنجاح بواسطة الأدمن", deleted });
+  } catch (error) {
+    console.error("❌ خطأ في حذف الطلب:", error.message);
+    res.status(500).json({ error: "فشل في حذف الطلب" });
+  }
+});
 module.exports = router;

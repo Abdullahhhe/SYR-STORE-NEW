@@ -21,7 +21,7 @@ exports.createProduct = async (req, res) => {
     }
 
     const imageUrl = req.file
-      ? `http://localhost:3000/api/uploads/${req.file.filename}`
+      ? `http://localhost:5000/api/uploads/${req.file.filename}`
       : "";
 
     const product = await Product.create({
@@ -70,14 +70,18 @@ exports.updateProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    const { merchantId } = req.body;
 
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ error: "المنتج غير موجود" });
     }
 
-    if (product.merchantId.toString() !== merchantId) {
+    const userId = req.user._id.toString();
+    const userRole = req.user.role;
+    const isOwner = product.merchantId.toString() === userId;
+    const isAdmin = userRole === "admin";
+
+    if (!isOwner && !isAdmin) {
       return res.status(403).json({ error: "ليس لديك صلاحية لحذف هذا المنتج" });
     }
 
