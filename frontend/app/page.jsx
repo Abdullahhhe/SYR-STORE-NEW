@@ -18,6 +18,9 @@ export default function Home() {
                     router.push("/homepage");
                 }
             }
+            if(!storeUser) {
+                router.push("/homepage");
+            }
         }
     }, []);
 
