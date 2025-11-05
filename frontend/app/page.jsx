@@ -11,15 +11,15 @@ export default function Home() {
             if (storeUser) {
                 const user = JSON.parse(storeUser);
                 if (user.role === "merchant") {
-                    router.push("/addProduct");
+                    router.push("components/addProduct");
                 } else if (user.role === "admin") {
-                    router.push("/dashboard");
+                    router.push("components/dashboard");
                 } else {
-                    router.push("/homepage");
+                    router.push("components/HomePage");
                 }
             }
             if(!storeUser) {
-                router.push("/homepage");
+                router.push("components/HomePage");
             }
         }
     }, []);
