@@ -3,7 +3,19 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 export default function Navbar() {
-  const merchant = JSON.parse(localStorage.getItem("user"));
+  const [merchant, setMerchant] = useState(null);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const parsed = JSON.parse(storedUser);
+        if (parsed.role === "merchant") {
+          parsed._id = parsed.id;
+          setMerchant(parsed);
+        }
+      }
+    }
+  }, []);
   const [isSticky, setIsSticky] = useState(false);
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => {
@@ -22,7 +34,7 @@ export default function Navbar() {
     <div
       className={`text-right w-[100%] top-0 z-50 sticky h-[80px] ${isSticky ? "fixed" : "relative"
         }`}
-        dir="rtl"
+      dir="rtl"
     >
       <nav className="bg-white border-b shadow-md px-4 py-2">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -65,17 +77,19 @@ export default function Navbar() {
               أضاف منتج
             </Link>
             <Link
-              href={"/components/merchant/viewAndDelete"}
+              href={"/components/viewAndDelete"}
               className="text-gray-700 hover:text-blue-600 text-sm"
             >
               عرض المنتجات
             </Link>
-            <Link
-              href={`/components/merchant/merchantOrder/${merchant.id}`}
-              className="text-gray-700 hover:text-blue-600 text-sm"
-            >
-              المبيعات
-            </Link>
+            {merchant && merchant.id && (
+              <Link
+                href={`/components/merchantOrder/${merchant.id}`}
+                className="text-gray-700 hover:text-blue-600 text-sm"
+              >
+                المبيعات
+              </Link>
+            )}
             <Link
               href="/components/login"
               className="text-blue-600 font-semibold text-sm"
@@ -96,17 +110,19 @@ export default function Navbar() {
                 أضاف منتج
               </Link>
               <Link
-                href={"/components/merchant/viewAndDelete"}
+                href={"/components/viewAndDelete"}
                 className="block text-gray-700 hover:text-blue-600 text-sm"
               >
                 عرض المنتجات
               </Link>
-              <Link
-                href={`/components/merchant/merchantOrder/${merchant.id}`}
-                className="block text-gray-700 hover:text-blue-600 text-sm"
-              >
-                المبيعات
-              </Link>
+              {merchant && merchant.id && (
+                <Link
+                  href={`/components/merchantOrder/${merchant.id}`}
+                  className="text-gray-700 hover:text-blue-600 text-sm"
+                >
+                  المبيعات
+                </Link>
+              )}
               <Link
                 href="/components/login"
                 className="block text-blue-600 font-semibold text-sm"

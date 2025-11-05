@@ -8,7 +8,7 @@ export default function Home(){
         if(storeUser){
             const user=JSON.parse(storeUser);
             if(user.role==="merchant"){
-                router.push("/components/merchant/addProduct");
+                router.push("/components/addProduct");
             }
             else router.push("/components/HomePage")
         }

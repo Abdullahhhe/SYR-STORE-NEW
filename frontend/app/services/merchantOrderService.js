@@ -1,5 +1,4 @@
-import MerchantOrder from "../../../backend/models/MerchantOrder";
-import mongoose from "mongoose";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export async function createMerchantOrder({
   merchantId,
@@ -8,36 +7,61 @@ export async function createMerchantOrder({
   purchaseId,
   quantity,
 }) {
-  return await MerchantOrder.create({
-    merchantId: new mongoose.Types.ObjectId(merchantId),
-    productId: new mongoose.Types.ObjectId(productId),
-    buyerId: new mongoose.Types.ObjectId(buyerId),
-    purchaseId: new mongoose.Types.ObjectId(purchaseId),
-    quantity,
-    status: "جاهز للتغليف",
-    timestamp: new Date(),
-  });
+  try {
+    const res = await fetch(`${ apiUrl }/merchant-orders/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        merchantId,
+        productId,
+        buyerId,
+        purchaseId,
+        quantity,
+      }),
+    });
+
+    if (!res.ok) throw new Error("فشل في إنشاء الطلب");
+    return await res.json();
+  } catch (error) {
+    console.error("❌ خطأ في createMerchantOrder:", error);
+    return null;
+  }
 }
 
 export async function getOrdersByMerchant(merchantId) {
-  return await MerchantOrder.find({ merchantId }).populate("productId buyerId");
+  try {
+    const res = await fetch(`${ apiUrl }/merchant-orders/by-merchant/${ merchantId }`);
+    if (!res.ok) throw new Error("فشل في جلب الطلبات");
+    return await res.json();
+  } catch (error) {
+    console.error("❌ خطأ في getOrdersByMerchant:", error);
+    return [];
+  }
 }
 
 export const getAllMerchantOrders = async () => {
   try {
-    const res = await fetch("http://localhost:5000/api/merchant-orders");
+    const res = await fetch(`${apiUrl}/merchant-orders`);
     if (!res.ok) throw new Error("فشل في جلب الطلبات");
-    const data = await res.json();
-    return data;
+    return await res.json();
   } catch (err) {
     console.error("❌ خطأ في getAllMerchantOrders:", err);
     return [];
   }
 };
+
 export async function updateOrderStatus(orderId, status) {
-  return await MerchantOrder.findByIdAndUpdate(
-    orderId,
-    { status },
-    { new: true }
-  );
+  try {
+    const res = await fetch(`${ apiUrl }/merchant-orders/update`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId, status }),
+    });
+
+    if (!res.ok) throw new Error("فشل في تحديث الطلب");
+    return await res.json();
+  } catch (error) {
+    console.error("❌ خطأ في updateOrderStatus:", error);
+    return null;
+  }
 }
