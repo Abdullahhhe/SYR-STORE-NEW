@@ -7,7 +7,7 @@ const cors = require("cors");
 const app = express();
 // الاتصال بقاعدة البيانات
 mongoose
-  .connect("mongodb://localhost:27017/SYRStore", {
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
