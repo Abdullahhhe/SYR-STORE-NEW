@@ -41,6 +41,9 @@ app.use("/api/purchase", purchaseRoutes);
 const uploadRoutes = require("./routes/upload");
 app.use("/api", uploadRoutes);
 app.use("/uploads", express.static("uploads"));
+app.get('/api/test', (req, res) => {
+  res.json({ message: '✅ المسار يعمل بنجاح' });
+});
 const PORT = 5000;
 app.listen(PORT,'0.0.0.0', () => {
   console.log("MONGODB URI"+ process.env.MONGO_URI);
