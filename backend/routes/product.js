@@ -15,7 +15,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // ✅ Get all products
-const mongoose = require('mongoose');
 
 router.get('/debug', async (req, res) => {
   try {
