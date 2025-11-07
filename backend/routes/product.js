@@ -15,6 +15,22 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // ✅ Get all products
+const mongoose = require('mongoose');
+
+router.get('/debug', async (req, res) => {
+  try {
+    const dbName = mongoose.connection.name;
+    const collectionName = Product.collection.name;
+    const raw = await mongoose.connection.db.collection(collectionName).findOne({});
+    res.json({
+      database: dbName,
+      collection: collectionName,
+      rawDocument: raw || 'لا يوجد مستندات',
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 router.get("/", async (req, res) => {
   try {
     console.log('🧾 اسم المجموعة المستخدمة:', Product.collection.name);
