@@ -16,6 +16,16 @@ const upload = multer({ storage });
 
 // ✅ Get all products
 
+router.get("/", async (req, res) => {
+  try {
+    console.log('🧾 اسم المجموعة المستخدمة:', Product.collection.name);
+    const products = await Product.find({});
+    console.log("📦 المنتجات المسترجعة:", products);
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 router.get('/debug', async (req, res) => {
   try {
     const dbName = mongoose.connection.name;
@@ -30,17 +40,6 @@ router.get('/debug', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-router.get("/", async (req, res) => {
-  try {
-    console.log('🧾 اسم المجموعة المستخدمة:', Product.collection.name);
-    const products = await Product.find({});
-    console.log("📦 المنتجات المسترجعة:", products);
-    res.status(200).json(products);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
 // ✅ Get product by ID
 router.get("/:id", async (req, res) => {
   try {
