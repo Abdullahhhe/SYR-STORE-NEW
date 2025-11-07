@@ -81,7 +81,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 }
 
 const imageUrl = req.file
-  ? `syr-store-new.onrender.com/uploads/${req.file.filename}`
+  ? `https://syr-store-new.onrender.com/uploads/${req.file.filename}`
       : null;
 
 const product = await Product.create({
