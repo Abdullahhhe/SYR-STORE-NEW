@@ -60,7 +60,7 @@ export default function ViewAndDeleteClient() {
   return (
     <div>
       <Header />
-      <p className="mt-[20px] mb-[10px] text-center font-bold text-xl">
+      <p className="mt-[20px] text-center font-bold text-xl">
         المنتجات الخاصة بي
       </p>
       <div
