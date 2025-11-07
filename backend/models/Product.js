@@ -39,7 +39,7 @@ const productSchema = new mongoose.Schema(
     merchantId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Merchant",
-      required: [true, "معرف التاجر مطلوب"],
+      required: /*[true, "معرف التاجر مطلوب"]*/false,
     },
   },
   {
