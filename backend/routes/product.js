@@ -17,6 +17,7 @@ const upload = multer({ storage });
 // ✅ Get all products
 router.get("/", async (req, res) => {
   try {
+    console.log('🧾 اسم المجموعة المستخدمة:', Product.collection.name);
     const products = await Product.find({});
     console.log("📦 المنتجات المسترجعة:", products);
     res.status(200).json(products);
