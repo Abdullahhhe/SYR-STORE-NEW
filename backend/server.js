@@ -5,6 +5,7 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const authRoutes = require("./routes/auth");
 const cors = require("cors");
 const app = express();
+const path = require("path");
 // الاتصال بقاعدة البيانات
 mongoose
   .connect(process.env.MONGO_URI)
@@ -40,7 +41,7 @@ const purchaseRoutes = require("./routes/purchase");
 app.use("/api/purchase", purchaseRoutes);
 const uploadRoutes = require("./routes/upload");
 app.use("/api", uploadRoutes);
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname,"uploads")));
 app.get('/api/test', (req, res) => {
   res.json({ message: '✅ المسار يعمل بنجاح' });
 });
