@@ -5,7 +5,7 @@ import Header from "../../components/user/Header";
 
 export default function ProductDetails({ product }) {
   const [isOpen, setIsOpen] = useState(false);
-
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const confirmAction = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
@@ -23,7 +23,7 @@ export default function ProductDetails({ product }) {
       productId: product?._id,
     });
     try {
-      const res = await fetch("http://localhost:5000/api/cart", {
+      const res = await fetch(`${apiUrl}/cart`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

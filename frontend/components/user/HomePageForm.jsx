@@ -9,7 +9,8 @@ export default function HomePage() {
     const [user, setUser] = useState(null);
     const [products, setProducts] = useState([]);
     const { category } = useFilter();
-
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    console.log("API URL:", apiUrl);
     // ✅ تحميل بيانات المستخدم من localStorage بطريقة آمنة
     useEffect(() => {
         if (typeof window !== "undefined") {

@@ -26,7 +26,7 @@ export default function AddProductForm() {
             }
         }
     }, []);
-
+console.log("🛍️ بيانات التاجر:", merchant);
     const addColor = () => {
         if (newColor.trim() && !color.includes(newColor.trim())) {
             setColor([...color, newColor.trim()]);
@@ -40,12 +40,12 @@ export default function AddProductForm() {
 
     const handleSubmit = async () => {
         if (!merchant) {
-            toast.error("❌ يجب تسجيل الدخول كتاجر");
+            alert("❌ يجب تسجيل الدخول كتاجر");
             return;
         }
 
         if (!imageFile) {
-            toast.error("❌ يجب اختيار صورة للمنتج");
+            alert("❌ يجب اختيار صورة للمنتج");
             return;
         }
 
@@ -60,17 +60,16 @@ export default function AddProductForm() {
         formData.append("image", imageFile);
 
         try {
-            const res = await fetch(`${apiUrl} / product`, {
+            const res = await fetch(`${apiUrl}/product`, {
                 method: "POST",
                 body: formData,
             });
-
             const data = await res.json();
             console.log("✅ المنتج أُضيف:", data);
-            toast.success("✅ تم إرسال المنتج بنجاح");
+            alert("✅ تم إرسال المنتج بنجاح");
         } catch (error) {
             console.error("❌ خطأ أثناء الإرسال:", error);
-            toast.error("حدث خطأ أثناء إرسال المنتج");
+            alert("حدث خطأ أثناء إرسال المنتج");
         }
     };
 

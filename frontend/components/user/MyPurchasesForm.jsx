@@ -6,7 +6,7 @@ import Header from "./Header";
 export default function MyPurchases() {
     const [purchases, setPurchases] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     useEffect(() => {
         if (typeof window === "undefined") return;
 
