@@ -18,6 +18,7 @@ const upload = multer({ storage });
 router.get("/", async (req, res) => {
   try {
     const products = await Product.find({});
+    console.log("📦 المنتجات المسترجعة:", products);
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
