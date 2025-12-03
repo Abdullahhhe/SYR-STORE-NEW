@@ -25,10 +25,10 @@ router.post("/upload", upload.single("image"), async (req, res) => {
             folder: "syr-store", // مجلد داخل حسابك
         });
 
-        // حذف الملف المؤقت بعد الرفع
+        // حذف الملف المؤقت
         fs.unlinkSync(req.file.path);
 
-        // إرسال الرابط النهائي للمستخدم
+        // إرسال الرابط النهائي
         res.status(200).json({ imageUrl: result.secure_url });
     } catch (err) {
         res.status(500).json({ error: err.message });
