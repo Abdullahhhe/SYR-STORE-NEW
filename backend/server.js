@@ -48,7 +48,6 @@ const purchaseRoutes = require("./routes/purchase");
 app.use("/api/purchase", purchaseRoutes);
 const uploadRoutes = require("./routes/upload");
 app.use("/api", uploadRoutes);
-app.use("/uploads", express.static(path.join(__dirname,"uploads")));
 app.get('/api/test', (req, res) => {
   res.json({ message: '✅ المسار يعمل بنجاح' });
 });
