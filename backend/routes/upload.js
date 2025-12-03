@@ -1,24 +1,38 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const path = require("path");
+const cloudinary = require("cloudinary").v2;
+const fs = require("fs");
 
-const storage = multer.diskStorage({
-    destination: "uploads/",
-    filename: (_, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
-    },
+// إعداد Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET,
 });
 
-const upload = multer({ storage });
+// Multer للتخزين المؤقت
+const upload = multer({ dest: "uploads/" });
 
-router.post("/upload", upload.single("image"), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ error: "لم يتم رفع أي صورة" });
+router.post("/upload", upload.single("image"), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: "لم يتم رفع أي صورة" });
+        }
+
+        // رفع الصورة إلى Cloudinary
+        const result = await cloudinary.uploader.upload(req.file.path, {
+            folder: "syr-store", // مجلد داخل حسابك
+        });
+
+        // حذف الملف المؤقت بعد الرفع
+        fs.unlinkSync(req.file.path);
+
+        // إرسال الرابط النهائي للمستخدم
+        res.status(200).json({ imageUrl: result.secure_url });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-
-    const imageUrl = `https://syr-store-new.onrender.com/uploads/${req.file.filename}`;
-        res.status(200).json({ imageUrl });
 });
 
 module.exports = router;

@@ -26,7 +26,7 @@ export default function AddProductForm() {
             }
         }
     }, []);
-console.log("🛍️ بيانات التاجر:", merchant);
+    console.log("🛍️ بيانات التاجر:", merchant);
     const addColor = () => {
         if (newColor.trim() && !color.includes(newColor.trim())) {
             setColor([...color, newColor.trim()]);

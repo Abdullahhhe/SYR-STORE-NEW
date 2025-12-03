@@ -6,6 +6,13 @@ const authRoutes = require("./routes/auth");
 const cors = require("cors");
 const app = express();
 const path = require("path");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
 // الاتصال بقاعدة البيانات
 mongoose
   .connect(process.env.MONGO_URI)

@@ -23,7 +23,7 @@ export default function MerchantOrder() {
             }
         }
     }, []);
-    
+
 
     const openShow = (order) => {
         setSelectedOrder(order);
@@ -58,7 +58,6 @@ export default function MerchantOrder() {
         , 0
     );
     const siteFee = (total / 10) / 2;
-
 
     return (
         <div className="w-full">

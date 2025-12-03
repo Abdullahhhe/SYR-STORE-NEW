@@ -24,6 +24,8 @@ const addToCart = async (req, res) => {
 
       if (existingItem) {
         existingItem.quantity += 1;
+
+        
       } else {
         cart.items.push({ productId, quantity: 1 });
       }
