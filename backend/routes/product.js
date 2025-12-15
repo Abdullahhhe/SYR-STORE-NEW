@@ -107,7 +107,7 @@ const product = await Product.create({
   image: imageUrl,
   merchantId: new mongoose.Types.ObjectId(merchantId),
 });
-
+    console.log("Cloudinary config:", process.env.CLOUD_NAME, process.env.CLOUD_API_KEY);
 res.status(201).json({ success: true, product });
   } catch (error) {
   console.error("❌ خطأ في إضافة المنتج:", error.message);

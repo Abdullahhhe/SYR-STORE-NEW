@@ -28,7 +28,8 @@ router.post("/upload", upload.single("image"), async (req, res) => {
         // حذف الملف المؤقت
         fs.unlinkSync(req.file.path);
 
-        // إرسال الرابط النهائي
+        // إرسال الرابط النهائي  
+        console.log("Cloudinary config:", process.env.CLOUD_NAME, process.env.CLOUD_API_KEY);
         res.status(200).json({ imageUrl: result.secure_url });
     } catch (err) {
         res.status(500).json({ error: err.message });
